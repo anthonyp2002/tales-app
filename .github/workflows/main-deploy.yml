@@ -18,7 +18,7 @@ jobs:
         with:
           filters: |
             flutter:
-              - 'flutter/*'
+              - 'flutter/**'
   build:
     name: Build
     runs-on: self-hosted
