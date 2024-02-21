@@ -3,7 +3,7 @@
 ### The choice between these two instructions depends on your specific requirements and the structure of your Dockerfile.
 #
 # FROM cirrusci/flutter:stable AS build
-FROM ghcr.io/cirruslabs/flutter:3.16.17 AS build-env
+FROM ghcr.io/cirruslabs/flutter:3.16.7 AS build-env
 
 ### Copying the files to the /app/ directory and setting it as the working directory.
 #
