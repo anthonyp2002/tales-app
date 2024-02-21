@@ -8,7 +8,7 @@ FROM ghcr.io/cirruslabs/flutter:3.16.7 AS build-env
 ### Copying the files to the /app/ directory and setting it as the working directory.
 #
 RUN mkdir /app/
-COPY /applicacion/ /app/
+COPY /aplicacion/ /app/
 WORKDIR /app/
 ### This command provides detailed information about the Flutter installation, environment, and any missing dependencies.
 ### And it helps ensure that the necessary tools and configurations are in place for building Flutter applications.
