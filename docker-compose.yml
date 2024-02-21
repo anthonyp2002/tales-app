@@ -1,0 +1,12 @@
+services:
+  flutter-app:
+    build:
+      context: flutter
+      dockerfile: Dockerfile
+    image: flutter-app:latest
+    container_name: flutter-app
+    expose:
+      - "80:80"
+    restart: always
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
