@@ -10,7 +10,7 @@ jobs:
     name: Check Changes
     runs-on: ubuntu-latest
     outputs:
-      odoo: ${{ steps.changes.outputs.flutter }}
+      flutter: ${{ steps.changes.outputs.flutter }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -41,7 +41,7 @@ jobs:
     env:
       URL_WEBSITE: ${{ vars.URL_WEBSITE }}
     environment:
-      name: url_website
+      name: Website
       url: https://${{ env.URL_WEBSITE }}
     steps:
       - name: Checkout

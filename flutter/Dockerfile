@@ -6,7 +6,7 @@
 FROM ghcr.io/cirruslabs/flutter:3.16.7 AS build-env
 
 ### Copying the files to the /app/ directory and setting it as the working directory.
-#
+
 RUN mkdir /app/
 COPY /app/ /app/
 WORKDIR /app/
