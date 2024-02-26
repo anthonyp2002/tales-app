@@ -19,7 +19,6 @@ class ProlecbController extends GetxController {
   Map<String, String> badResult = {};
   Map<String, String> goodResult = {};
   String numImg = "";
-  late User use;
   String tiempo = '';
   List<OptionsModel> imgOption = [];
 
@@ -58,28 +57,25 @@ class ProlecbController extends GetxController {
     return "No identificado";
   }
 
-  void datos(User a, String crono) {
-    use = a;
-    tiempo = crono;
-    update();
-  }
-
   void nextQuestions() {
     if (pageController.positions.isNotEmpty) {
       if (pageController.page == imgOption.length - 1) {
         print(puntuacion);
         Get.offAllNamed('/prolecC');
-        Get.find<InitController>()
-            .datos(use, tiempo, puntuacion, 0, 0, 0, 0, 0, 0);
+        Get.find<InitController>().datos(tiempo, puntuacion, 0, 0, 0, 0, 0, 0);
         addInformeImg(badResult, "ERRORES");
         addInformeImg(goodResult, "Aciertos");
       } else {
         pageController.nextPage(
             duration: const Duration(milliseconds: 500), curve: Curves.linear);
-        print(use.fullname);
         print(tiempo);
       }
     }
+  }
+
+  void datos(String tmp) {
+    tiempo = tmp;
+    update();
   }
 
   @override

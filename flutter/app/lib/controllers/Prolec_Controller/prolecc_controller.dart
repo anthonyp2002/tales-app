@@ -37,8 +37,7 @@ class ProlecCController extends GetxController {
     pageController = PageController(initialPage: 0);
   }
 
-  void datos(User a, String tmp, int ptn) {
-    use = a;
+  void datos(String tmp, int ptn) {
     tiempo = tmp;
     puntos = ptn;
     update();
@@ -71,9 +70,12 @@ class ProlecCController extends GetxController {
   void nextQuestions() {
     if (pageController.positions.isNotEmpty) {
       if (pageController.page == optionsText.length - 1) {
+        print(tiempo);
+        print(puntos);
+        print(puntuacionText);
         Get.offAllNamed('/prolecD_A');
         Get.find<InitController>()
-            .datos(use, tiempo, puntos, puntuacionText, 0, 0, 0, 0, 0);
+            .datos(tiempo, puntos, puntuacionText, 0, 0, 0, 0, 0);
         addInformeSt(badResult, tit, "ERRORES");
         addInformeSt(goodResult, tit, "ACIERTOS");
       } else {

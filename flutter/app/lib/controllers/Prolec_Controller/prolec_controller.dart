@@ -44,12 +44,6 @@ class ProlecController extends GetxController {
     });
   }
 
-  void datos(User a) {
-    use = a;
-    print("El use es $use");
-    update();
-  }
-
   Future<void> startRecognition() async {
     var available = await speechToText.initialize();
     if (available) {
@@ -84,13 +78,13 @@ class ProlecController extends GetxController {
   void cambiarPalabras() {
     indexPalabra.value += 4;
     if (indexPalabra.value >= palabras.length) {
-      print(use.fullname);
       cronometro.cancel();
+      String timeup = obtenerTiempoFormateado();
+      print(timeup);
       dispose();
       Get.put(InitController());
       Get.offAllNamed('/prolecB');
-      Get.find<InitController>()
-          .datos(use, obtenerTiempoFormateado(), 0, 0, 0, 0, 0, 0, 0);
+      Get.find<InitController>().datos(timeup, 0, 0, 0, 0, 0, 0, 0);
       isLisent = false.obs;
     }
     cargarPalabras();

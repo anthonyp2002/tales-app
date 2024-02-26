@@ -90,7 +90,7 @@ class StudentController extends GetxController
     print(a.fullname);
     print(a.anioLec);
     Get.offAllNamed('/prolec');
-    Get.find<InitController>().datos(a, "", 0, 0, 0, 0, 0, 0, 0);
+    Get.find<InitController>().datos("", 0, 0, 0, 0, 0, 0, 0);
   }
 
   void sendGetRequest() async {

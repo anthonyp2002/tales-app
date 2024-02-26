@@ -84,7 +84,6 @@ class ProlecDAPage extends GetView<InitController> {
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                                 builder: (context) => ProlecFour(
-                                    usuario: controller.use,
                                     time: controller.tiempo,
                                     puntos: controller.puntos,
                                     puntosH: controller.puntosH)),
@@ -117,13 +116,11 @@ class ProlecDAPage extends GetView<InitController> {
 }
 
 class ProlecFour extends GetView<ProlecDAController> {
-  User usuario;
   String time;
   int puntos;
   int puntosH;
   ProlecFour(
       {Key? key,
-      required this.usuario,
       required this.time,
       required this.puntos,
       required this.puntosH})
@@ -131,7 +128,7 @@ class ProlecFour extends GetView<ProlecDAController> {
   @override
   Widget build(BuildContext context) {
     Get.put(ProlecDAController());
-    controller.datos(usuario, time, puntos, puntosH);
+    controller.datos(time, puntos, puntosH);
     return StatefulBuilder(builder: (context, setState) {
       return MaterialApp(
         debugShowCheckedModeBanner: false,

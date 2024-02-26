@@ -296,8 +296,8 @@ Future<void> addTea(String name, String gmail, String age, String phone,
 /// - `pntA`: La puntuación de la prueba de antónimos.
 /// - `pntOr`: La puntuación de la prueba de ortografía.
 /// - `pntS`: La puntuación de la prueba de sinónimos.
-Future<void> addCuestionario(String nameUse, String time, int pnt, int pntH,
-    int pntO, int pntI, int pntA, int pntOr, int pntS) async {
+Future<void> addCuestionario(String time, int pnt, int pntH, int pntO, int pntI,
+    int pntA, int pntOr, int pntS) async {
   // Crea un nuevo documento en la subcolección 'Puntuaciones' del estudiante actual con los datos proporcionados.
 
   await db

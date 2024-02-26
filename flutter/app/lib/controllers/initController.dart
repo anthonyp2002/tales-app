@@ -43,7 +43,6 @@ class InitController extends GetxController {
   Stream<String> get speechTextStream => _speechTextStreamController.stream;
 
   late Timer cronometro;
-  late User use = User("Juanjsn", "12", "2", "", "password", "phone");
   String tiempo = '';
   int puntos = 0;
   int puntosH = 0;
@@ -78,9 +77,8 @@ class InitController extends GetxController {
     pageController = PageController(initialPage: 0);
   }
 
-  void datos(User a, String tmp, int ptn, int pntH, int pntO, int pntIA,
-      int pntIB, int pntIC, int pntID) {
-    use = a;
+  void datos(String tmp, int ptn, int pntH, int pntO, int pntIA, int pntIB,
+      int pntIC, int pntID) {
     tiempo = tmp;
     puntos = ptn;
     puntosH = pntH;

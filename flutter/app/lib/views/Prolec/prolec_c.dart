@@ -90,7 +90,6 @@ class ProlecCPage extends GetView<InitController> {
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                                 builder: (context) => ProlecThree(
-                                      usuario: controller.use,
                                       time: controller.tiempo,
                                       puntuacion: controller.puntos,
                                       optionsTex: controller.optionsText,
@@ -124,13 +123,11 @@ class ProlecCPage extends GetView<InitController> {
 }
 
 class ProlecThree extends GetView<ProlecCController> {
-  User usuario;
   String time;
   int puntuacion;
   List<OptionsText> optionsTex = [];
   ProlecThree(
       {Key? key,
-      required this.usuario,
       required this.time,
       required this.puntuacion,
       required this.optionsTex})
@@ -143,8 +140,9 @@ class ProlecThree extends GetView<ProlecCController> {
   @override
   Widget build(BuildContext context) {
     final isDesktop = MediaQuery.of(context).size.width > 600;
-
-    controller.datos(usuario, time, puntuacion);
+    print(time);
+    print(puntuacion);
+    controller.datos(time, puntuacion);
     controller.optionsText = optionsTex;
     return StatefulBuilder(builder: (context, setState) {
       return MaterialApp(
@@ -252,7 +250,6 @@ class ProlecThree extends GetView<ProlecCController> {
                                         onPressed: () {
                                           Get.offAllNamed('/prolecD_A');
                                           Get.find<InitController>().datos(
-                                              controller.use,
                                               controller.tiempo,
                                               controller.puntos,
                                               6,

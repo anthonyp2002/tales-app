@@ -86,8 +86,7 @@ class ProlecPage extends GetView<InitController> {
                         onPressed: () {
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    ProlecOne(usuario: controller.use)),
+                                builder: (context) => ProlecOne()),
                           );
                         },
                         constraints: const BoxConstraints(
@@ -117,8 +116,7 @@ class ProlecPage extends GetView<InitController> {
 }
 
 class ProlecOne extends GetView<ProlecController> {
-  User usuario;
-  ProlecOne({Key? key, required this.usuario}) : super(key: key);
+  ProlecOne({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     Get.put(InitController());
@@ -126,7 +124,6 @@ class ProlecOne extends GetView<ProlecController> {
     controller.startRecognition();
     controller.iniciarCronometro();
     controller.obtenerTiempoFormateado();
-    controller.datos(usuario);
     return StatefulBuilder(builder: (context, setState) {
       return MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -222,7 +219,7 @@ class ProlecOne extends GetView<ProlecController> {
                       Get.put(InitController());
                       Get.offAllNamed('/prolecB');
                       Get.find<InitController>()
-                          .datos(controller.use, "00:41", 0, 0, 0, 0, 0, 0, 0);
+                          .datos("00:41", 0, 0, 0, 0, 0, 0, 0);
                     },
                     child: const Text("Cambiar "),
                   ),

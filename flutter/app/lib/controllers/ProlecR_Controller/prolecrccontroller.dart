@@ -12,7 +12,6 @@ import 'package:flutter/material.dart'
         TextButton,
         showDialog;
 import "package:get/get.dart";
-import '../../models/user.dart';
 
 enum TtsState { playing, stopped }
 
@@ -23,7 +22,6 @@ class ProlecRCController extends GetxController {
   List<String> badResult = [];
   List<SeudoModel> seuModel = [];
 
-  late User use;
   String tiempo = '';
   int puntos = 0;
   int puntosH = 0;
@@ -38,9 +36,8 @@ class ProlecRCController extends GetxController {
     pageController = PageController(initialPage: 0);
   }
 
-  void datos(User a, String tmp, int ptn, int pntH, int pntO, int pntIA,
-      int pntIB, int pntIC) {
-    use = a;
+  void datos(String tmp, int ptn, int pntH, int pntO, int pntIA, int pntIB,
+      int pntIC) {
     tiempo = tmp;
     puntos = ptn;
     puntosH = pntH;
@@ -56,8 +53,8 @@ class ProlecRCController extends GetxController {
       if (pageController.page == seuModel.length - 1) {
         // ignore: avoid_print
         print("Acabado");
-        addCuestionario(use.fullname, tiempo, puntos, puntosH, puntosO,
-            puntosIA, puntosIB, puntosIC, puntuacion);
+        addCuestionario(tiempo, puntos, puntosH, puntosO, puntosIA, puntosIB,
+            puntosIC, puntuacion);
         addInforme(badResult, "Sinonimos", "ERRORES");
         addInforme(goodResult, "Sinonimos", "ACIERTOS");
         _mostrarAgradecimiento();
@@ -71,6 +68,7 @@ class ProlecRCController extends GetxController {
   void _mostrarAgradecimiento() {
     showDialog(
       context: Get.context!,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('¡Gracias!'),

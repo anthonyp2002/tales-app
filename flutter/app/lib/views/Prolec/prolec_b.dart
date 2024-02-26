@@ -88,7 +88,6 @@ class ProlecbPage extends GetView<InitController> {
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                                 builder: (context) => ProlecTwo(
-                                      usuario: controller.use,
                                       time: controller.tiempo,
                                       imgOptn: controller.imgOption,
                                     )),
@@ -121,20 +120,15 @@ class ProlecbPage extends GetView<InitController> {
 }
 
 class ProlecTwo extends GetView<ProlecbController> {
-  User usuario;
   String time;
   List<OptionsModel> imgOptn = [];
-  ProlecTwo(
-      {Key? key,
-      required this.usuario,
-      required this.time,
-      required this.imgOptn})
+  ProlecTwo({Key? key, required this.time, required this.imgOptn})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Get.put(ProlecbController());
-    controller.datos(usuario, time);
+    controller.datos(time);
     controller.imgOption = imgOptn;
     final isDesktop = MediaQuery.of(context).size.width > 600;
 
@@ -222,8 +216,8 @@ class ProlecTwo extends GetView<ProlecbController> {
                     ),
                     MaterialButton(
                       onPressed: () {
-                        Get.find<InitController>().datos(controller.use,
-                            controller.tiempo, 8, 0, 0, 0, 0, 0, 0);
+                        Get.find<InitController>()
+                            .datos(controller.tiempo, 8, 0, 0, 0, 0, 0, 0);
                         Get.offAllNamed('/prolecC');
                       },
                       child: const Text("Cambiar "),

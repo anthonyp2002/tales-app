@@ -21,7 +21,6 @@ class ProlecDBController extends GetxController {
   CameraImage? get cameraImage => _cameraImage;
   RxString result = ''.obs;
   RxBool isWorking = false.obs;
-  late User use;
   String tiempo = '';
   int puntos = 0;
   int puntosH = 0;
@@ -33,8 +32,7 @@ class ProlecDBController extends GetxController {
     loadModel();
   }
 
-  void datos(User a, String tmp, int ptn, int pntH, int pntO) {
-    use = a;
+  void datos(String tmp, int ptn, int pntH, int pntO) {
     tiempo = tmp;
     puntos = ptn;
     puntosH = pntH;
@@ -111,10 +109,10 @@ class ProlecDBController extends GetxController {
           puntosO = 5;
           print(puntosO);
           await Future.delayed(const Duration(seconds: 1), () {
-            User as = User("", "age", "", "gmail", "password", "phone");
+            print("${tiempo} ${puntos} ${puntosH} ${puntosO}");
             Get.offAllNamed('/prolecR');
             Get.find<InitController>()
-                .datos(as, tiempo, puntos, puntosH, puntosO, 0, 0, 0, 0);
+                .datos(tiempo, puntos, puntosH, puntosO, 0, 0, 0, 0);
           });
         }
       }
@@ -149,10 +147,9 @@ class ProlecDBController extends GetxController {
   void nextQuestions() {
     if (pageController.positions.isNotEmpty) {
       if (pageController.page == Instruc().optionsText.length - 1) {
-        User as = User("", "age", "", "gmail", "password", "phone");
         Get.offAllNamed('/prolecR');
         Get.find<InitController>()
-            .datos(as, tiempo, puntos, puntosH, puntosO, 0, 0, 0, 0);
+            .datos(tiempo, puntos, puntosH, puntosO, 0, 0, 0, 0);
         print("Pase");
       } else {
         pageController.nextPage(

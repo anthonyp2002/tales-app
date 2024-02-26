@@ -76,7 +76,6 @@ class ProlecRCPage extends GetView<InitController> {
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                                 builder: (context) => ProlecEight(
-                                    usuario: controller.use,
                                     time: controller.tiempo,
                                     puntuacion: controller.puntos,
                                     puntH: controller.puntosH,
@@ -102,7 +101,6 @@ class ProlecRCPage extends GetView<InitController> {
 }
 
 class ProlecEight extends GetView<ProlecRCController> {
-  User usuario;
   String time;
   int puntuacion;
   int puntH;
@@ -113,7 +111,6 @@ class ProlecEight extends GetView<ProlecRCController> {
   List<SeudoModel> sino = [];
   ProlecEight(
       {Key? key,
-      required this.usuario,
       required this.time,
       required this.puntuacion,
       required this.puntH,
@@ -127,8 +124,7 @@ class ProlecEight extends GetView<ProlecRCController> {
   @override
   Widget build(BuildContext context) {
     Get.put(ProlecRCController());
-    controller.datos(
-        usuario, time, puntuacion, puntH, puntO, puntIA, puntIB, puntIC);
+    controller.datos(time, puntuacion, puntH, puntO, puntIA, puntIB, puntIC);
     controller.seuModel = sino;
     return StatefulBuilder(builder: (context, setState) {
       return MaterialApp(

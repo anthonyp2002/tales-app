@@ -3,7 +3,6 @@ import 'package:aplicacion/models/seudo.dart';
 import 'package:aplicacion/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 import "package:get/get.dart";
-import '../../models/user.dart';
 
 class ProlecRAController extends GetxController {
   late int puntuacion = 0;
@@ -11,7 +10,6 @@ class ProlecRAController extends GetxController {
   List<String> goodResult = [];
   List<String> badResult = [];
   List<SeudoModel> seuModel = [];
-  late User use;
   String tiempo = '';
   int puntos = 0;
   int puntosH = 0;
@@ -24,8 +22,7 @@ class ProlecRAController extends GetxController {
     pageController = PageController(initialPage: 0);
   }
 
-  void datos(User a, String tmp, int ptn, int pntH, int pntO, int pntIA) {
-    use = a;
+  void datos(String tmp, int ptn, int pntH, int pntO, int pntIA) {
     tiempo = tmp;
     puntos = ptn;
     puntosH = pntH;
@@ -39,7 +36,7 @@ class ProlecRAController extends GetxController {
       if (pageController.page == seuModel.length - 1) {
         Get.offAllNamed('/prolecRB');
         Get.find<InitController>().datos(
-            use, tiempo, puntos, puntosH, puntosO, puntosIA, puntuacion, 0, 0);
+            tiempo, puntos, puntosH, puntosO, puntosIA, puntuacion, 0, 0);
         addInforme(badResult, "Antonimos", "ERRORES");
         addInforme(goodResult, "Antonimos", "ACIERTOS");
       } else {

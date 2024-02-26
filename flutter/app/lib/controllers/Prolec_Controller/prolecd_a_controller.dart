@@ -28,7 +28,6 @@ class ProlecDAController extends GetxController {
   double containerHeight = 0.0;
   double screenWidth = 0.0;
 
-  late User use;
   String tiempo = '';
   int puntos = 0;
   int puntosH = 0;
@@ -42,8 +41,7 @@ class ProlecDAController extends GetxController {
     super.onInit();
   }
 
-  void datos(User a, String tmp, int ptn, int pntH) {
-    use = a;
+  void datos(String tmp, int ptn, int pntH) {
     tiempo = tmp;
     puntos = ptn;
     puntosH = pntH;
@@ -58,13 +56,12 @@ class ProlecDAController extends GetxController {
         Get.offAllNamed('/prolecD_B');
 
         Get.find<ProlecDBController>()
-            .datos(use, tiempo, puntos, puntosH, puntuacion);
+            .datos(tiempo, puntos, puntosH, puntuacion);
         Get.offAllNamed('/prolecD_B');
       } else {
         print("Paginas");
         print(pageController.positions.isNotEmpty);
         print(pageController.page);
-        print(use.fullname);
         print(puntos);
         print(tiempo);
         print(puntosH);

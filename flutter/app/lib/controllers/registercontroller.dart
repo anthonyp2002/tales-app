@@ -96,7 +96,7 @@ class RegisterController extends GetxController {
       addStudent(a.fullname, a.age, age.toString(), a.anioLec, a.password);
       // Get.offAllNamed('/prolec');
       await Get.offAllNamed('/gustosPage');
-      Get.find<InitController>().datos(a, "", 0, 0, 0, 0, 0, 0, 0);
+      Get.find<InitController>().datos("", 0, 0, 0, 0, 0, 0, 0);
     } else {
       Get.snackbar('Error', 'Verifique los campos');
     }

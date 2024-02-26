@@ -337,6 +337,22 @@ Widget Home(controller, context) {
                                   ],
                                 ),
                               ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Get.offAllNamed("/home");
+                                },
+                                style: ButtonStyle(
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(100.0),
+                                    ),
+                                  ),
+                                ),
+                                child: Text('Cerrar Sesión',
+                                    style: GoogleFonts.ysabeau(fontSize: 18)),
+                              ),
                             ],
                           )
                         ],
