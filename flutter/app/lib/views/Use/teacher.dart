@@ -1366,6 +1366,18 @@ Future editStuden(BuildContext context, setState, controller, studens) {
           ),
           actions: <Widget>[
             TextButton(
+              child: const Text('Eliminar'),
+              onPressed: () async {
+                deleteUSer(idController.text);
+                Navigator.of(context).pop();
+                await controller.getStudentD();
+                setState(() {
+                  controller.getStudent();
+                });
+                controller.update();
+              },
+            ),
+            TextButton(
               child: const Text('Cerrar'),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -1488,50 +1500,63 @@ Widget Reportes(context, setState, controller) {
                                         padding:
                                             const EdgeInsets.only(top: 3.0),
                                         itemBuilder: (context, position) {
-                                          return Card(
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.all(5.0),
-                                                  child: const CircleAvatar(
-                                                    backgroundColor:
-                                                        Color(0xFF17203A),
-                                                    radius: 35,
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: ListTile(
-                                                    title: Text(
-                                                      cuestions[position]["id"],
-                                                      style:
-                                                          GoogleFonts.ysabeau(
-                                                              fontSize: 22,
-                                                              color:
-                                                                  Colors.black,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400),
+                                          return GestureDetector(
+                                              child: Card(
+                                                child: Row(
+                                                  children: [
+                                                    Container(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              5.0),
+                                                      child: const CircleAvatar(
+                                                        backgroundColor:
+                                                            Color(0xFF17203A),
+                                                        radius: 35,
+                                                      ),
                                                     ),
-                                                    subtitle: Row(
-                                                      children: [
-                                                        Text(
+                                                    Expanded(
+                                                      child: ListTile(
+                                                        title: Text(
                                                           cuestions[position]
-                                                                  ["Fecha"]
-                                                              .toString(),
-                                                          style: const TextStyle(
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w300),
+                                                              ["id"],
+                                                          style: GoogleFonts
+                                                              .ysabeau(
+                                                                  fontSize: 22,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400),
                                                         ),
-                                                      ],
+                                                        subtitle: Row(
+                                                          children: [
+                                                            Text(
+                                                              cuestions[position]
+                                                                      ["Fecha"]
+                                                                  .toString(),
+                                                              style: const TextStyle(
+                                                                  fontSize: 15,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w300),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
+                                                  ],
                                                 ),
-                                              ],
-                                            ),
-                                          );
+                                              ),
+                                              onTap: () async {
+                                                await controller.getCuestionInf(
+                                                    cuestions[position]["id"]);
+
+                                                infCuestions(
+                                                    context,
+                                                    setState,
+                                                    controller,
+                                                    cuestions[position]);
+                                              });
                                         },
                                       ),
                                     );
@@ -1552,5 +1577,91 @@ Widget Reportes(context, setState, controller) {
         ),
       ],
     ),
+  );
+}
+
+Future infCuestions(BuildContext context, setState, controller, cuestions) {
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        content: SizedBox(
+          width: 400,
+          height: 450,
+          child: Column(
+            children: <Widget>[
+              const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+              Text(cuestions["id"],
+                  style: GoogleFonts.ysabeau(
+                      fontSize: 25,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400)),
+              Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    FractionallySizedBox(
+                      widthFactor: 1,
+                      child: Column(
+                        children: [
+                          const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 3)),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text("Puntuacion",
+                                style: GoogleFonts.ysabeau(
+                                    fontSize: 22,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400)),
+                          ),
+                          Obx(() {
+                            return Align(
+                              alignment: AlignmentDirectional.centerStart,
+                              child: controller.infCues != null
+                                  ? Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        for (var entry
+                                            in controller.infCues!.entries)
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                                "${entry.key}: ${entry.value}",
+                                                style: GoogleFonts.ysabeau(
+                                                    fontSize: 20,
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.w400)),
+                                          ),
+                                      ],
+                                    )
+                                  : Text('La colección está vacía'),
+                            );
+                          })
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Cerrar'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
   );
 }

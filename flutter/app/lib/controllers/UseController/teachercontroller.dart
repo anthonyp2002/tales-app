@@ -23,7 +23,8 @@ class TeacherController extends GetxController {
   RxInt number_cuestions = 0.obs;
   bool num = false;
   RxList cuestionarios = [].obs;
-
+  String idStudent = "";
+  RxMap<String, dynamic>? infCues;
   int get selectedIndex => _selectedIndex.value;
   var student;
   void onTabChange(int index) {
@@ -69,8 +70,21 @@ class TeacherController extends GetxController {
     estudiante = await getStuByName(name);
     number_cuestions = await Cuestionarios(estudiante);
     for (var estudiante in estudiante) {
+      idStudent = estudiante.idStudent;
       cuestionarios = await getCuestionariosID(estudiante.idStudent);
     }
+  }
+
+  getCuestionInf(String idCuestionario) async {
+    print("Entro al info del CUestionario ");
+    infCues = await getCuesInfDe(idStudent, idCuestionario);
+    List<dynamic> valoresNumericos = [];
+
+    // Iterar sobre los valores del mapa
+    infCues?.values.forEach((valor) {
+      valoresNumericos.add(valor);
+    });
+    print("Valores numéricos: $valoresNumericos");
   }
 
   bool confirm() {

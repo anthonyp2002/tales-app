@@ -8,6 +8,7 @@ import "package:aplicacion/models/seudo.dart";
 import "package:aplicacion/models/userStudent.dart";
 import "package:aplicacion/models/userTeacher.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
+import "package:firebase_core/firebase_core.dart";
 import "package:get/get.dart";
 
 /// Crea una instancia de FirebaseFirestore.
@@ -147,7 +148,6 @@ Future<RxList<UserStudent>> getStuByName(String name) async {
       .where('idTeacher', isEqualTo: docuIdTeacer)
       .get()
       .then((QuerySnapshot querySnapshot) {
-    // Para cada documento devuelto por la consulta, crea una nueva instancia de `UserStudent` y la añade a la lista de estudiantes.
     for (var doc in querySnapshot.docs) {
       print("Entro");
       students.add(UserStudent.fromDocument(doc));
@@ -307,7 +307,6 @@ Future<void> addCuestionario(String nameUse, String time, int pnt, int pntH,
       .doc("Cuestions ${a}")
       .collection("Puntuaciones")
       .add({
-    "NameUserStudent": nameUse,
     "PunctuationTime": time,
     "PunctuationImg": pnt,
     "PunctuationHistory": pntH,
@@ -549,7 +548,6 @@ Future<RxList> getCuestionariosID(String StudentId) async {
     print("La cantidad de cuestionarios es $cantidadCuestionarios");
     print("Los cuestionarios son $cuestionarios");
 
-    //getCuesInfDe(StudentId, cuestionarioId);
     return cuestionarios;
   } catch (e) {
     print('Ocurrió un error: $e');
@@ -557,7 +555,7 @@ Future<RxList> getCuestionariosID(String StudentId) async {
   }
 }
 
-Future<Map<String, dynamic>?> getCuesInfDe(StudentId, CuestID) async {
+Future<RxMap<String, dynamic>?> getCuesInfDe(StudentId, CuestID) async {
   try {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection("CuentaStudent")
@@ -579,7 +577,7 @@ Future<Map<String, dynamic>?> getCuesInfDe(StudentId, CuestID) async {
       print("Datos del documento: $datos");
 
       // Retornar el Map con los datos
-      return datos;
+      return datos.obs;
     } else {
       print("La colección está vacía");
       return null;
@@ -704,4 +702,19 @@ Future<List<ImgGustos>> getGustosOne() async {
     }
   }
   return gus;
+}
+
+///Servicio para eliminar usuarios de Alunmos
+Future<void> deleteUSer(String studentID) async {
+  try {
+    DocumentReference documenteReference =
+        db.collection("CuentaStudent").doc(studentID);
+
+    documenteReference.delete().whenComplete(() {
+      print("El ususairo con el id ${studentID} fue eliminado");
+    });
+  } catch (e) {
+    print("Error al eliminar el usuario");
+    print(e);
+  }
 }
