@@ -5,6 +5,12 @@ import 'package:aplicacion/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+class Puntuacion {
+  final String categoria;
+  final int puntuacion;
+  Puntuacion(this.categoria, this.puntuacion);
+}
+
 class TeacherController extends GetxController {
   final GlobalKey<FormState> singinFormKey =
       GlobalKey<FormState>(debugLabel: '__singinFormKey__');
@@ -24,7 +30,23 @@ class TeacherController extends GetxController {
   bool num = false;
   RxList cuestionarios = [].obs;
   String idStudent = "";
+  RxBool graficaDatos = false.obs;
+  List<Puntuacion> datos = [];
+  RxList<List<Puntuacion>> datosExternos = new RxList<List<Puntuacion>>();
   RxMap<String, dynamic>? infCues;
+  RxMap<String, dynamic>? infGrafica;
+  RxString selectItem = ''.obs;
+  List<String> options = [
+    '1 Basica',
+    '2 Basica',
+    '3 Basica',
+    '4 Basica',
+    '5 Basica',
+    '6 Basica',
+    '7 Basica',
+    '8 Basica',
+    '9 Basica'
+  ];
   int get selectedIndex => _selectedIndex.value;
   var student;
   void onTabChange(int index) {
@@ -39,13 +61,8 @@ class TeacherController extends GetxController {
   }
 
   addStud() {
-    final a = User(
-        fullNameControler.text,
-        ageController.text,
-        anioLecController.text,
-        gmailController.text,
-        passwordController.text,
-        phoneController.text);
+    final a = User(fullNameControler.text, ageController.text, selectItem.value,
+        gmailController.text, passwordController.text, phoneController.text);
     print(age.toString());
     addStudent(a.fullname, a.age, age.toString(), a.anioLec, a.password);
   }
@@ -75,12 +92,41 @@ class TeacherController extends GetxController {
     }
   }
 
+  getGraficaCuestion(cuestionarios) async {
+    datosExternos.clear();
+    for (var cuestion in cuestionarios) {
+      infGrafica = await getCuesInfDe(idStudent, cuestion['id']);
+      List<Puntuacion> d = [];
+
+      for (var entry in infGrafica!.entries) {
+        if (entry.value is int) {
+          d.add(Puntuacion(entry.key, entry.value));
+        }
+      }
+      final ordenEspecifico = [
+        "PunctuationSinonimos",
+        "PunctuationImg",
+        "PunctuationHistory",
+        "PunctuationOrtografia",
+        "PunctuationPalabraSi",
+        "PunctuationOrdenes",
+        "PunctuationAntonimos"
+      ];
+      d.sort((a, b) => ordenEspecifico
+          .indexOf(a.categoria)
+          .compareTo(ordenEspecifico.indexOf(b.categoria)));
+
+      datosExternos.add(d);
+    }
+    print(datosExternos);
+    graficaDatos = true.obs;
+  }
+
   getCuestionInf(String idCuestionario) async {
     print("Entro al info del CUestionario ");
     infCues = await getCuesInfDe(idStudent, idCuestionario);
     List<dynamic> valoresNumericos = [];
 
-    // Iterar sobre los valores del mapa
     infCues?.values.forEach((valor) {
       valoresNumericos.add(valor);
     });

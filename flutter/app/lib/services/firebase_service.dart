@@ -238,7 +238,7 @@ Future<void> addStudent(String name, String birthdate, String age,
     "name": name,
     "birthdate": birthdate,
     "age": age,
-    "schoolYear": schoolYear + " Basica",
+    "schoolYear": schoolYear,
     "password": password,
     "idTeacher": docuIdTeacer
   });
@@ -573,10 +573,6 @@ Future<RxMap<String, dynamic>?> getCuesInfDe(StudentId, CuestID) async {
       // Acceder a los datos del documento
       Map<String, dynamic> datos = doc.data() as Map<String, dynamic>;
 
-      // Hacer algo con los datos...
-      print("Datos del documento: $datos");
-
-      // Retornar el Map con los datos
       return datos.obs;
     } else {
       print("La colección está vacía");

@@ -11,7 +11,18 @@ import '../models/user.dart';
 class RegisterController extends GetxController {
   final GlobalKey<FormState> singinFormKey =
       GlobalKey<FormState>(debugLabel: '__singinFormKey__');
-
+  RxString selectItem = ''.obs;
+  List<String> options = [
+    '1 Basica',
+    '2 Basica',
+    '3 Basica',
+    '4 Basica',
+    '5 Basica',
+    '6 Basica',
+    '7 Basica',
+    '8 Basica',
+    '9 Basica'
+  ];
   final passwordController = TextEditingController();
   final gmailController = TextEditingController();
   final fullNameControler = TextEditingController();
@@ -80,13 +91,8 @@ class RegisterController extends GetxController {
 
   Future<void> login() async {
     // ignore: unused_local_variable
-    final a = User(
-        fullNameControler.text,
-        ageController.text,
-        anioLecController.text,
-        gmailController.text,
-        passwordController.text,
-        phoneController.text);
+    final a = User(fullNameControler.text, ageController.text, selectItem.value,
+        gmailController.text, passwordController.text, phoneController.text);
     if (singinFormKey.currentState!.validate()) {
       Get.snackbar('Login', 'Registrado Correctamente');
       // ignore: avoid_print

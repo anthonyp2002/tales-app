@@ -146,14 +146,30 @@ class LoginStudentPage extends GetView<RegisterController> {
             child: TextFormField(
               keyboardType: TextInputType.number,
               enableInteractiveSelection: false,
-              autofocus: true,
+              autofocus: false,
               decoration: InputDecoration(
                   hintText: "Año Lectivo",
-                  suffixIcon: const Icon(Icons.school),
+                  suffixIcon: PopupMenuButton<String>(
+                    icon: Icon(Icons.arrow_drop_down),
+                    onSelected: (String value) {
+                      setState(() {
+                        controller.selectItem.value = value;
+                      });
+                    },
+                    itemBuilder: (BuildContext context) {
+                      return controller.options.map((String value) {
+                        return PopupMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList();
+                    },
+                  ),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0))),
               validator: controller.validator,
-              controller: controller.anioLecController,
+              controller:
+                  TextEditingController(text: controller.selectItem.value),
             ),
           ),
           const Padding(padding: EdgeInsets.symmetric(vertical: 10)),

@@ -41,7 +41,8 @@ dependencies:
   google_fonts: ^5.1.0
   path_provider: ^2.1.0
   string_similarity: ^2.0.0
- 
+  syncfusion_flutter_charts: ^24.2.8
+
 
   #Getx
   get: ^4.6.5

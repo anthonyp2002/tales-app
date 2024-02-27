@@ -9,6 +9,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:sidebarx/sidebarx.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class TeacherPage extends GetView<TeacherController> {
   List<Widget> buildWidgetList(context, setState) {
@@ -189,6 +190,7 @@ class TeacherPage extends GetView<TeacherController> {
 }
 
 Widget Home(controller, context) {
+  controller.graficaDatos = false.obs;
   final isDesktop = MediaQuery.of(context).size.width > 900;
   final asd = MediaQuery.of(context).size.width > 1300;
   final double radio = MediaQuery.of(context).size.width / 7;
@@ -512,7 +514,7 @@ Widget Home(controller, context) {
 Widget Student(context, setState, singinFormKey, controller) {
   final isDesktop = MediaQuery.of(context).size.width > 900;
   final con = MediaQuery.of(context).size.width > 1600;
-
+  controller.graficaDatos = false.obs;
   return SingleChildScrollView(
     child: Center(
       child: SizedBox(
@@ -1122,6 +1124,12 @@ Future infStudent(BuildContext context, setState, controller, studens) {
 }
 
 Future saveStudent(BuildContext context, setState, controller) {
+  List<DropdownMenuItem<String>> dropdownItems = controller.options
+      .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          ))
+      .toList();
   return showDialog(
       context: context,
       barrierDismissible: false,
@@ -1185,28 +1193,38 @@ Future saveStudent(BuildContext context, setState, controller) {
                   controller: controller.ageController,
                 ),
                 const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-                TextFormField(
-                  decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.transparent),
-                          borderRadius: BorderRadius.circular(5.5)),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.transparent),
-                          borderRadius: BorderRadius.circular(5.5)),
-                      prefixIcon: const Icon(
-                        LineIcons.school,
-                        color: Color.fromARGB(255, 64, 66, 68),
-                      ),
-                      hintText: "Año Lectivo",
-                      hintStyle: const TextStyle(
-                          color: Color.fromARGB(255, 35, 33, 33)),
-                      filled: true,
-                      fillColor: Colors.blue[50]),
-                  validator: controller.validator,
-                  controller: controller.anioLecController,
-                ),
+                Obx(() {
+                  return TextFormField(
+                    decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(5.5)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(5.5)),
+                        prefixIcon: const Icon(
+                          LineIcons.school,
+                          color: Color.fromARGB(255, 64, 66, 68),
+                        ),
+                        hintText: "Año Lectivo",
+                        suffixIcon: DropdownButton<String>(
+                            onChanged: (String? value) {
+                              setState(() {
+                                controller.selectItem.value = value;
+                              });
+                            },
+                            items: dropdownItems),
+                        hintStyle: const TextStyle(
+                            color: Color.fromARGB(255, 35, 33, 33)),
+                        filled: true,
+                        fillColor: Colors.blue[50]),
+                    validator: controller.validator,
+                    controller: TextEditingController(
+                        text: controller.selectItem.value),
+                  );
+                }),
                 const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
                 TextFormField(
                   obscureText: true,
@@ -1243,7 +1261,7 @@ Future saveStudent(BuildContext context, setState, controller) {
                         setState(() {
                           controller.fullNameControler.clear();
                           controller.ageController.clear();
-                          controller.anioLecController.clear();
+                          controller.selectItem = "".obs;
                           controller.passwordController.clear();
                           controller.getStudent();
                         });
@@ -1281,9 +1299,15 @@ Future saveStudent(BuildContext context, setState, controller) {
 }
 
 Future editStuden(BuildContext context, setState, controller, studens) {
+  List<DropdownMenuItem<String>> dropdownItems = controller.options
+      .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          ))
+      .toList();
   final fullnameController = TextEditingController(text: studens.fullname);
   final ageController = TextEditingController(text: studens.birthdate);
-  final anioLecController = TextEditingController(text: studens.anioLec);
+  controller.selectItem = RxString(studens.anioLec);
   final idController = TextEditingController(text: studens.idStudent);
   final idTeacher = TextEditingController(text: studens.idTeacher);
   final pasword = TextEditingController(text: studens.password);
@@ -1352,28 +1376,38 @@ Future editStuden(BuildContext context, setState, controller, studens) {
                   controller: ageController,
                 ),
                 const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-                TextFormField(
-                  decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.transparent),
-                          borderRadius: BorderRadius.circular(5.5)),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.transparent),
-                          borderRadius: BorderRadius.circular(5.5)),
-                      prefixIcon: const Icon(
-                        LineIcons.school,
-                        color: Color.fromARGB(255, 64, 66, 68),
-                      ),
-                      hintText: "Año Lectivo",
-                      hintStyle: const TextStyle(
-                          color: Color.fromARGB(255, 35, 33, 33)),
-                      filled: true,
-                      fillColor: Colors.blue[50]),
-                  validator: controller.validator,
-                  controller: anioLecController,
-                ),
+                Obx(() {
+                  return TextFormField(
+                    decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(5.5)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(5.5)),
+                        prefixIcon: const Icon(
+                          LineIcons.school,
+                          color: Color.fromARGB(255, 64, 66, 68),
+                        ),
+                        hintText: "Año Lectivo",
+                        suffixIcon: DropdownButton<String>(
+                            onChanged: (String? value) {
+                              setState(() {
+                                controller.selectItem.value = value;
+                              });
+                            },
+                            items: dropdownItems),
+                        hintStyle: const TextStyle(
+                            color: Color.fromARGB(255, 35, 33, 33)),
+                        filled: true,
+                        fillColor: Colors.blue[50]),
+                    validator: controller.validator,
+                    controller: TextEditingController(
+                        text: controller.selectItem.value),
+                  );
+                }),
               ],
             ),
           ),
@@ -1386,7 +1420,7 @@ Future editStuden(BuildContext context, setState, controller, studens) {
               onPressed: () async {
                 deleteUSer(idController.text);
                 Navigator.of(context).pop();
-                await controller.getStudentD();
+                await controller.getStudent();
                 setState(() {
                   controller.getStudent();
                 });
@@ -1410,7 +1444,7 @@ Future editStuden(BuildContext context, setState, controller, studens) {
                     fullname: fullnameController.text,
                     birthdate: ageController.text,
                     age: controller.age.toString(),
-                    anioLec: anioLecController.text,
+                    anioLec: controller.selectItem.value,
                     password: pasword.text,
                     idTeacher: idTeacher.text);
                 updateStudent(users);
@@ -1471,13 +1505,14 @@ Widget Reportes(context, setState, controller) {
             setState(() {
               controller.getStuden(nameStudent.text);
             });
+            await controller.getGraficaCuestion(controller.cuestionarios);
           },
         ),
         Obx(() {
           List<UserStudent> estudiante =
               controller.estudiante as List<UserStudent>;
           return SizedBox(
-              height: 470.0,
+              height: 400.0,
               child: ListView.builder(
                   itemCount: estudiante.length,
                   padding: const EdgeInsets.only(top: 3.0),
@@ -1581,13 +1616,43 @@ Widget Reportes(context, setState, controller) {
                     );
                   }));
         }),
-        const FractionallySizedBox(
-          widthFactor: 0.8,
+        FractionallySizedBox(
+          widthFactor: 0.7,
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Text(
-              "Reporte:",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+            child: Center(
+              child: Column(
+                children: [
+                  Container(
+                      height: 400,
+                      color: Colors.white,
+                      child: Obx(() {
+                        print(controller.graficaDatos.value);
+                        print(controller.datosExternos.length);
+
+                        return controller.graficaDatos.value
+                            ? SfCartesianChart(
+                                legend: const Legend(isVisible: true),
+                                primaryXAxis: const CategoryAxis(),
+                                series: List.generate(
+                                  controller.datosExternos.length,
+                                  (index) {
+                                    return LineSeries<Puntuacion, String>(
+                                      name: 'Cuestionarios ${index + 1}',
+                                      dataSource:
+                                          controller.datosExternos[index],
+                                      xValueMapper: (Puntuacion datos, _) =>
+                                          datos.categoria,
+                                      yValueMapper: (Puntuacion datos, _) =>
+                                          datos.puntuacion,
+                                    );
+                                  },
+                                ),
+                              )
+                            : Text("Generador de Reportes");
+                      }))
+                ],
+              ),
             ),
           ),
         ),
