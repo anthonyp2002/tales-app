@@ -1649,7 +1649,7 @@ Widget Reportes(context, setState, controller) {
                                   },
                                 ),
                               )
-                            : Text("Generador de Reportes");
+                            : Container();
                       }))
                 ],
               ),
