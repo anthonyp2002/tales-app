@@ -169,8 +169,8 @@ class GustosOne extends GetView<GustosController> {
                                   .imggustos[index].imag!.entries
                                   .map((image) {
                                 return CheckboxListTile(
-                                  title: Image.asset(
-                                      image.value.entries.first.key),
+                                  title: Image.network(
+                                      "${image.value.entries.first.key}"),
                                   value: image.value.entries.first.value,
                                   onChanged: (bool? newValue) {
                                     setState(() {

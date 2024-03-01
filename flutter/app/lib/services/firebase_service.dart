@@ -1,5 +1,8 @@
 // ignore_for_file: non_constant_identifier_names, unused_element, avoid_print
 
+import "dart:html";
+import "dart:typed_data";
+
 import "package:aplicacion/models/img_gustos.dart";
 import "package:aplicacion/models/orto.dart";
 import "package:aplicacion/models/prolcec_model.dart";
@@ -8,11 +11,12 @@ import "package:aplicacion/models/seudo.dart";
 import "package:aplicacion/models/userStudent.dart";
 import "package:aplicacion/models/userTeacher.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
-import "package:firebase_core/firebase_core.dart";
+import "package:firebase_storage/firebase_storage.dart";
 import "package:get/get.dart";
 
-/// Crea una instancia de FirebaseFirestore.
+/// Crea una instancia de FirebaseFirestore y FirebaseStorage.
 FirebaseFirestore db = FirebaseFirestore.instance;
+FirebaseStorage storage = FirebaseStorage.instance;
 
 // Inicializa dos cadenas vacías.
 String docuId = "";
@@ -114,22 +118,12 @@ Future<RxList<UserStudent>> getEstudiante() async {
 }
 
 Future<void> addIamges(
-    int id, String questions, Map<String, Map<String, bool>> images) async {
-  print(images);
-  try {
-    await FirebaseFirestore.instance
-        .collection("Data")
-        .doc("Images")
-        .collection("ImagenesGustos")
-        .add({
-      "id": id,
-      "questions": questions,
-      "UrlImages": images,
-      // ... otros campos y valores que desees agregar
-    });
-  } catch (error) {
-    print('Error al agregar datos: $error');
-  }
+    int? id, String? questions, Map<String, bool> answer) async {
+  await db.collection("Data").doc("Images").collection("ImagenesProlec").add({
+    "id": id,
+    "questions": questions,
+    "Answer": answer,
+  });
 }
 
 /// Obtiene una lista de profesor de Firestore.
@@ -713,4 +707,52 @@ Future<void> deleteUSer(String studentID) async {
     print("Error al eliminar el usuario");
     print(e);
   }
+}
+
+Future<String?> uploadImage(String childName, Uint8List image) async {
+  try {
+    Reference referencia = storage.ref().child('AvataresUser/$childName');
+    UploadTask uploadTask = referencia.putData(image);
+    TaskSnapshot snapshot = await uploadTask;
+
+    String urlDeDescarga = await snapshot.ref.getDownloadURL();
+
+    return urlDeDescarga;
+  } catch (e) {
+    print('Error al subir la imagen: $e');
+    return null;
+  }
+}
+
+Future<void> updateTeacherImg(Uint8List img, UserTeacher user) async {
+  String? imgUrl = await uploadImage("Avatar${user.fullname}", img);
+  await db.collection("CuentaTeacher").doc(user.idTeacher).set({
+    "name": user.fullname,
+    "birthdate": user.age,
+    "age": user.edad,
+    "password": user.password,
+    "gmail": user.gmail,
+    "phone": user.phone,
+    "urlImage": imgUrl
+  });
+}
+
+Future<List<String>> obtenerURLsDeCarpeta(String rutaCarpeta) async {
+  List<String> urls = [];
+
+  try {
+    Reference carpetaReferencia =
+        FirebaseStorage.instance.ref().child(rutaCarpeta);
+    ListResult listaResultados = await carpetaReferencia.listAll();
+
+    for (var item in listaResultados.items) {
+      String url = await item.getDownloadURL();
+      urls.add(url);
+    }
+    print(urls);
+  } catch (e) {
+    print('Error al obtener URLs de la carpeta: $e');
+  }
+
+  return urls;
 }

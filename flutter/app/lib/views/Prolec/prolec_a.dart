@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/Prolec_Controller/prolec_controller.dart';
-import '../../models/user.dart';
 
 class ProlecPage extends GetView<InitController> {
   @override
@@ -86,7 +85,7 @@ class ProlecPage extends GetView<InitController> {
                         onPressed: () {
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
-                                builder: (context) => ProlecOne()),
+                                builder: (context) => const ProlecOne()),
                           );
                         },
                         constraints: const BoxConstraints(
@@ -116,7 +115,7 @@ class ProlecPage extends GetView<InitController> {
 }
 
 class ProlecOne extends GetView<ProlecController> {
-  ProlecOne({Key? key}) : super(key: key);
+  const ProlecOne({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     Get.put(InitController());

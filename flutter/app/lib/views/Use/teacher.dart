@@ -1,7 +1,9 @@
 // ignore_for_file: must_be_immutable, non_constant_identifier_names
 import 'package:aplicacion/controllers/UseController/teachercontroller.dart';
 import 'package:aplicacion/models/userStudent.dart';
+import 'package:aplicacion/models/userTeacher.dart';
 import 'package:aplicacion/services/firebase_service.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,7 +16,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 class TeacherPage extends GetView<TeacherController> {
   List<Widget> buildWidgetList(context, setState) {
     return [
-      Home(controller, context),
+      Home(controller, context, setState),
       Student(context, setState, controller.singinFormKey, controller),
       Reportes(context, setState, controller),
     ];
@@ -32,7 +34,8 @@ class TeacherPage extends GetView<TeacherController> {
         home: Container(
           decoration: const BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage('assets/plantilla.png'),
+                  image: NetworkImage(
+                      "https://media.istockphoto.com/id/1404823735/es/vector/fondo-de-colores-vibrantes-gradiente-p%C3%BArpura-ondulado.jpg?s=612x612&w=0&k=20&c=iuaOYqtgg0N3H30POuQKkYTphtGF8vI3WGYB9DlyPQg="),
                   fit: BoxFit.cover)),
           child: Scaffold(
             backgroundColor: Colors.transparent,
@@ -189,7 +192,20 @@ class TeacherPage extends GetView<TeacherController> {
   }
 }
 
-Widget Home(controller, context) {
+Widget Home(controller, context, setState) {
+  Future getImage() async {
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.image);
+
+    if (result != null) {
+      setState(() {
+        controller.imagen = result.files.single.bytes;
+      });
+    } else {
+      print('No se seleccionó ninguna imagen.');
+    }
+  }
+
   controller.graficaDatos = false.obs;
   final isDesktop = MediaQuery.of(context).size.width > 900;
   final asd = MediaQuery.of(context).size.width > 1300;
@@ -202,8 +218,9 @@ Widget Home(controller, context) {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
+          List<UserTeacher> profesor = controller.teacers as List<UserTeacher>;
+
           if (isDesktop) {
-            print(MediaQuery.of(context).size.width);
             return SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Center(
@@ -211,9 +228,53 @@ Widget Home(controller, context) {
                   children: [
                     const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 50)),
-                    CircleAvatar(
-                      backgroundColor: Colors.white,
-                      radius: radio - 60,
+                    Column(
+                      children: [
+                        const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 130)),
+                        Stack(children: [
+                          controller.imagen == null
+                              ? CircleAvatar(
+                                  backgroundImage: profesor[0].imgUrl == ""
+                                      ? const NetworkImage(
+                                          "https://cdn-icons-png.flaticon.com/512/6596/6596121.png")
+                                      : NetworkImage(profesor[0].imgUrl),
+                                  radius: radio - 60,
+                                )
+                              : CircleAvatar(
+                                  radius: radio - 60,
+                                  backgroundImage:
+                                      MemoryImage(controller.imagen!),
+                                ),
+                          Positioned(
+                            bottom: -5,
+                            left: 305,
+                            child: IconButton(
+                              onPressed: () {
+                                getImage();
+                              },
+                              icon: const Icon(Icons.add_a_photo),
+                              iconSize: 60,
+                            ),
+                          ),
+                        ]),
+                        ElevatedButton(
+                          onPressed: () {
+                            print(profesor[0]);
+                            updateTeacherImg(controller.imagen, profesor[0]);
+                          },
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                          ),
+                          child: Text('Guardar Imagen',
+                              style: GoogleFonts.ysabeau(fontSize: 25)),
+                        )
+                      ],
                     ),
                     const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 25)),
@@ -370,9 +431,32 @@ Widget Home(controller, context) {
               child: Column(
                 children: [
                   const Padding(padding: EdgeInsets.symmetric(vertical: 20)),
-                  const CircleAvatar(
-                    backgroundColor: Colors.blue,
-                    radius: 75,
+                  Stack(
+                    children: [
+                      controller.imagen == null
+                          ? CircleAvatar(
+                              backgroundImage: profesor[0].imgUrl == ""
+                                  ? const NetworkImage(
+                                      "https://cdn-icons-png.flaticon.com/512/6596/6596121.png")
+                                  : NetworkImage(profesor[0].imgUrl),
+                              radius: 75,
+                            )
+                          : CircleAvatar(
+                              radius: 75,
+                              backgroundImage: MemoryImage(controller.imagen!),
+                            ),
+                      Positioned(
+                        bottom: -10,
+                        left: 105,
+                        child: IconButton(
+                          onPressed: () {
+                            getImage();
+                          },
+                          icon: const Icon(Icons.add_a_photo),
+                          iconSize: 30,
+                        ),
+                      ),
+                    ],
                   ),
                   const Padding(padding: EdgeInsets.symmetric(vertical: 15)),
                   const Text("Datos Personales",
@@ -569,8 +653,9 @@ Widget Student(context, setState, singinFormKey, controller) {
                                   children: [
                                     Container(
                                       padding: const EdgeInsets.all(5.0),
-                                      child: CircleAvatar(
-                                        backgroundColor: Colors.blue.shade200,
+                                      child: const CircleAvatar(
+                                        backgroundImage: NetworkImage(
+                                            "https://cdn-icons-png.flaticon.com/512/6596/6596121.png"),
                                         radius: 70,
                                       ),
                                     ),
@@ -668,7 +753,8 @@ Widget Student(context, setState, singinFormKey, controller) {
                                 Container(
                                   padding: const EdgeInsets.all(5.0),
                                   child: const CircleAvatar(
-                                    backgroundColor: Colors.blue,
+                                    backgroundImage: NetworkImage(
+                                        "https://cdn-icons-png.flaticon.com/512/6596/6596121.png"),
                                     radius: 35,
                                   ),
                                 ),
@@ -988,7 +1074,8 @@ Future infStudent(BuildContext context, setState, controller, studens) {
           child: Column(
             children: <Widget>[
               const CircleAvatar(
-                backgroundColor: Colors.blue,
+                backgroundImage: NetworkImage(
+                    "https://cdn-icons-png.flaticon.com/512/6596/6596121.png"),
                 radius: 50,
               ),
               const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
@@ -1560,8 +1647,9 @@ Widget Reportes(context, setState, controller) {
                                                           const EdgeInsets.all(
                                                               5.0),
                                                       child: const CircleAvatar(
-                                                        backgroundColor:
-                                                            Color(0xFF17203A),
+                                                        backgroundImage:
+                                                            NetworkImage(
+                                                                "https://cdn-icons-png.flaticon.com/512/8456/8456568.png"),
                                                         radius: 35,
                                                       ),
                                                     ),

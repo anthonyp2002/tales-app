@@ -1,12 +1,10 @@
 // ignore_for_file: must_be_immutable, use_key_in_widget_constructors
-
 import 'package:aplicacion/controllers/initController.dart';
 import 'package:aplicacion/models/prolecb_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/Prolec_Controller/prolecb_controller.dart';
-import '../../models/user.dart';
 
 class ProlecbPage extends GetView<InitController> {
   @override
@@ -149,7 +147,7 @@ class ProlecTwo extends GetView<ProlecbController> {
                   children: [
                     const Padding(padding: EdgeInsets.symmetric(vertical: 35)),
                     SingleChildScrollView(
-                      child: Container(
+                      child: SizedBox(
                         height: isDesktop
                             ? MediaQuery.of(context).size.height
                             : MediaQuery.of(context).size.height - 200,
@@ -199,7 +197,7 @@ class ProlecTwo extends GetView<ProlecbController> {
                                         },
                                         child: Container(
                                           padding: const EdgeInsets.all(4),
-                                          child: Image.asset(
+                                          child: Image.network(
                                             image.key,
                                             fit: BoxFit.contain,
                                           ),

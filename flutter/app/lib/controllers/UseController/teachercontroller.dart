@@ -1,7 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:aplicacion/models/user.dart';
 import 'package:aplicacion/models/userStudent.dart';
 import 'package:aplicacion/models/userTeacher.dart';
 import 'package:aplicacion/services/firebase_service.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,6 +15,7 @@ class Puntuacion {
 }
 
 class TeacherController extends GetxController {
+  Uint8List? imagen;
   final GlobalKey<FormState> singinFormKey =
       GlobalKey<FormState>(debugLabel: '__singinFormKey__');
   final _selectedIndex = 0.obs;
