@@ -21,7 +21,7 @@ class StudentController extends GetxController
   RxList<UserTeacher> teacers = <UserTeacher>[].obs;
   RxList cuestionarios = [].obs;
   final RxBool isTyping = false.obs;
-  User a = User("", "", "", "gmail", "password", "");
+  User a = User("", "", "", "gmail", "password", "", "");
   bool isPressed = false;
   bool isPresedMenuClose = false;
   bool presedQuedate = false;
@@ -75,7 +75,8 @@ class StudentController extends GetxController
     print(students.length);
     for (var student in students) {
       print(student.fullname);
-      a = User(student.fullname, student.age, student.anioLec, "", "", "");
+      a = User(student.fullname, student.age, student.anioLec, "", "", "",
+          student.urlImage);
     }
     refresh();
     update();

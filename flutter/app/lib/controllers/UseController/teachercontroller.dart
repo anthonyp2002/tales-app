@@ -16,6 +16,10 @@ class Puntuacion {
 
 class TeacherController extends GetxController {
   Uint8List? imagen;
+  Uint8List? imgStudent;
+
+  Rxn<Uint8List> imgSt = Rxn<Uint8List>();
+
   final GlobalKey<FormState> singinFormKey =
       GlobalKey<FormState>(debugLabel: '__singinFormKey__');
   final _selectedIndex = 0.obs;
@@ -29,6 +33,8 @@ class TeacherController extends GetxController {
   final ageController = TextEditingController();
   final anioLecController = TextEditingController();
   final confirmController = TextEditingController();
+  final url = "";
+
   RxInt age = 0.obs;
   RxInt number_cuestions = 0.obs;
   bool num = false;
@@ -64,11 +70,48 @@ class TeacherController extends GetxController {
     getStudent();
   }
 
-  addStud() {
-    final a = User(fullNameControler.text, ageController.text, selectItem.value,
-        gmailController.text, passwordController.text, phoneController.text);
-    print(age.toString());
-    addStudent(a.fullname, a.age, age.toString(), a.anioLec, a.password);
+  void actualizarImagen(Uint8List nuevaImagen) {
+    if (nuevaImagen.isEmpty) {
+      print('Actualizar Vacio');
+      imgSt.value = null;
+    } else {
+      print('Actualizar lleno');
+      imgSt.value = nuevaImagen;
+    }
+  }
+
+  Future getImage() async {
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.image);
+
+    if (result != null) {
+      imagen = result.files.single.bytes;
+    } else {
+      print('No se seleccionó ninguna imagen.');
+    }
+  }
+
+  addStud() async {
+    Uint8List as = Uint8List(0);
+    final a = User(
+        fullNameControler.text,
+        ageController.text,
+        selectItem.value,
+        gmailController.text,
+        passwordController.text,
+        phoneController.text,
+        url);
+    if (imgSt.value == null) {
+      as = Uint8List(0);
+    } else {
+      as = imgSt.value!;
+    }
+    imgSt.value = null;
+
+    addStudent(as, a.fullname, a.age, age.toString(), a.anioLec, a.password);
+    await getStudent();
+    refresh();
+    update();
   }
 
   getStudent() async {
@@ -93,6 +136,27 @@ class TeacherController extends GetxController {
     for (var estudiante in estudiante) {
       idStudent = estudiante.idStudent;
       cuestionarios = await getCuestionariosID(estudiante.idStudent);
+    }
+  }
+
+  Future<Uint8List?> subirImage(setState) async {
+    Uint8List? imagenSeleccionada;
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.image);
+
+    if (result != null && result.files.isNotEmpty) {
+      if (result.files.single.bytes != null) {
+        setState(() {
+          imagenSeleccionada = result.files.single.bytes!;
+        });
+        return imagenSeleccionada;
+      } else {
+        print('El archivo seleccionado no contiene datos de imagen.');
+      }
+    } else {
+      imagenSeleccionada = Uint8List(0);
+      print('No se seleccionó ninguna imagen.');
+      return imagenSeleccionada;
     }
   }
 

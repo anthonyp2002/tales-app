@@ -1,4 +1,6 @@
 // ignore: unusort
+import 'dart:typed_data';
+
 import 'package:aplicacion/controllers/UseController/teachercontroller.dart';
 import 'package:aplicacion/controllers/initController.dart';
 import 'package:aplicacion/services/firebase_service.dart';
@@ -30,6 +32,9 @@ class RegisterController extends GetxController {
   final ageController = TextEditingController();
   final anioLecController = TextEditingController();
   final confirmController = TextEditingController();
+  final url = "";
+  late Uint8List imagen;
+
   RxInt age = 0.obs;
   @override
   void onInit() {
@@ -91,15 +96,22 @@ class RegisterController extends GetxController {
 
   Future<void> login() async {
     // ignore: unused_local_variable
-    final a = User(fullNameControler.text, ageController.text, selectItem.value,
-        gmailController.text, passwordController.text, phoneController.text);
+    final a = User(
+        fullNameControler.text,
+        ageController.text,
+        selectItem.value,
+        gmailController.text,
+        passwordController.text,
+        phoneController.text,
+        url);
     if (singinFormKey.currentState!.validate()) {
       Get.snackbar('Login', 'Registrado Correctamente');
       // ignore: avoid_print
       print(a.fullname);
       // ignore: avoid_print
       print(a.anioLec);
-      addStudent(a.fullname, a.age, age.toString(), a.anioLec, a.password);
+      addStudent(
+          imagen, a.fullname, a.age, age.toString(), a.anioLec, a.password);
       // Get.offAllNamed('/prolec');
       await Get.offAllNamed('/gustosPage');
       Get.find<InitController>().datos("", 0, 0, 0, 0, 0, 0, 0);
@@ -115,7 +127,8 @@ class RegisterController extends GetxController {
         anioLecController.text,
         gmailController.text,
         passwordController.text,
-        phoneController.text);
+        phoneController.text,
+        url);
     Get.lazyPut(() => TeacherController());
 
     if (singinFormKey.currentState!.validate()) {

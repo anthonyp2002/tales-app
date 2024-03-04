@@ -12,6 +12,7 @@ class UserStudent {
   final String anioLec;
   final String password;
   final String idTeacher;
+  final String urlImage;
 
   /// Crea una nueva instancia de `UserStudent`.
   ///
@@ -23,20 +24,21 @@ class UserStudent {
       required this.age,
       required this.anioLec,
       required this.password,
-      required this.idTeacher});
+      required this.idTeacher,
+      required this.urlImage});
 
   /// Crea una nueva instancia de `UserStudent` a partir de un documento de Firestore.
   ///
   /// Este es un constructor de fábrica que toma un `DocumentSnapshot` (un documento de Firestore) y crea una nueva instancia de `UserStudent` con los datos del documento.
   factory UserStudent.fromDocument(DocumentSnapshot doc) {
     return UserStudent(
-      idStudent: doc.id,
-      fullname: doc['name'],
-      birthdate: doc["birthdate"],
-      age: doc["age"],
-      anioLec: doc["schoolYear"],
-      password: doc["password"],
-      idTeacher: doc['idTeacher'],
-    );
+        idStudent: doc.id,
+        fullname: doc['name'],
+        birthdate: doc["birthdate"],
+        age: doc["age"],
+        anioLec: doc["schoolYear"],
+        password: doc["password"],
+        idTeacher: doc['idTeacher'],
+        urlImage: doc['urlImage']);
   }
 }

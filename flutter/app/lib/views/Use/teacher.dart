@@ -1,4 +1,6 @@
 // ignore_for_file: must_be_immutable, non_constant_identifier_names
+import 'dart:typed_data';
+
 import 'package:aplicacion/controllers/UseController/teachercontroller.dart';
 import 'package:aplicacion/models/userStudent.dart';
 import 'package:aplicacion/models/userTeacher.dart';
@@ -250,30 +252,16 @@ Widget Home(controller, context, setState) {
                             bottom: -5,
                             left: 305,
                             child: IconButton(
-                              onPressed: () {
-                                getImage();
+                              onPressed: () async {
+                                await getImage();
+                                updateTeacherImg(
+                                    controller.imagen, profesor[0]);
                               },
                               icon: const Icon(Icons.add_a_photo),
                               iconSize: 60,
                             ),
                           ),
                         ]),
-                        ElevatedButton(
-                          onPressed: () {
-                            print(profesor[0]);
-                            updateTeacherImg(controller.imagen, profesor[0]);
-                          },
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                            ),
-                          ),
-                          child: Text('Guardar Imagen',
-                              style: GoogleFonts.ysabeau(fontSize: 25)),
-                        )
                       ],
                     ),
                     const Padding(
@@ -449,8 +437,9 @@ Widget Home(controller, context, setState) {
                         bottom: -10,
                         left: 105,
                         child: IconButton(
-                          onPressed: () {
-                            getImage();
+                          onPressed: () async {
+                            await getImage();
+                            updateTeacherImg(controller.imagen, profesor[0]);
                           },
                           icon: const Icon(Icons.add_a_photo),
                           iconSize: 30,
@@ -599,6 +588,7 @@ Widget Student(context, setState, singinFormKey, controller) {
   final isDesktop = MediaQuery.of(context).size.width > 900;
   final con = MediaQuery.of(context).size.width > 1600;
   controller.graficaDatos = false.obs;
+  controller.getStudent();
   return SingleChildScrollView(
     child: Center(
       child: SizedBox(
@@ -630,8 +620,8 @@ Widget Student(context, setState, singinFormKey, controller) {
                     alignment: Alignment.center,
                     height: 800,
                     child: Obx(() {
-                      List<UserStudent> students =
-                          controller.students as List<UserStudent>;
+                      RxList<UserStudent> students =
+                          controller.students as RxList<UserStudent>;
                       return GridView.count(
                         crossAxisCount: con
                             ? 4
@@ -653,9 +643,14 @@ Widget Student(context, setState, singinFormKey, controller) {
                                   children: [
                                     Container(
                                       padding: const EdgeInsets.all(5.0),
-                                      child: const CircleAvatar(
-                                        backgroundImage: NetworkImage(
-                                            "https://cdn-icons-png.flaticon.com/512/6596/6596121.png"),
+                                      child: CircleAvatar(
+                                        backgroundImage: students[index]
+                                                    .urlImage ==
+                                                ""
+                                            ? const NetworkImage(
+                                                "https://cdn-icons-png.flaticon.com/512/6596/6596121.png")
+                                            : NetworkImage(
+                                                students[index].urlImage),
                                         radius: 70,
                                       ),
                                     ),
@@ -1224,11 +1219,43 @@ Future saveStudent(BuildContext context, setState, controller) {
         return AlertDialog(
           title: const Center(child: Text('Registrar Alumno')),
           content: SizedBox(
-            width: 500,
-            height: 400,
+            width: 400,
+            height: 500,
             child: Column(
               children: [
-                const Padding(padding: EdgeInsets.symmetric(vertical: 15)),
+                Obx(() {
+                  return Stack(
+                    children: [
+                      controller.imgSt.value == null
+                          ? CircleAvatar(
+                              backgroundImage: controller.url == ""
+                                  ? const NetworkImage(
+                                      "https://cdn-icons-png.flaticon.com/512/6596/6596121.png")
+                                  : NetworkImage(controller.url),
+                              radius: 50,
+                            )
+                          : CircleAvatar(
+                              radius: 50,
+                              backgroundImage:
+                                  MemoryImage(controller.imgSt.value!),
+                            ),
+                      Positioned(
+                        bottom: -10,
+                        left: 50,
+                        child: IconButton(
+                          onPressed: () async {
+                            Uint8List? nuevaImagen =
+                                await controller.subirImage(setState);
+                            controller.actualizarImagen(nuevaImagen);
+                          },
+                          icon: const Icon(Icons.add_a_photo),
+                          iconSize: 30,
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+                const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
                 TextFormField(
                   decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
@@ -1351,6 +1378,8 @@ Future saveStudent(BuildContext context, setState, controller) {
                           controller.selectItem = "".obs;
                           controller.passwordController.clear();
                           controller.getStudent();
+                          controller.refresh();
+                          controller.update();
                         });
                         Navigator.pop(context);
                       },
@@ -1369,6 +1398,11 @@ Future saveStudent(BuildContext context, setState, controller) {
                         controller.anioLecController.clear();
                         controller.passwordController.clear();
                         controller.getStudent();
+                        setState(() {
+                          controller.getStudent();
+                          controller.refresh();
+                          controller.update();
+                        });
                       },
                       child: Text("Agregar",
                           style: TextStyle(
@@ -1398,6 +1432,7 @@ Future editStuden(BuildContext context, setState, controller, studens) {
   final idController = TextEditingController(text: studens.idStudent);
   final idTeacher = TextEditingController(text: studens.idTeacher);
   final pasword = TextEditingController(text: studens.password);
+  final url = TextEditingController(text: studens.urlImage);
   return showDialog(
       context: context,
       barrierDismissible: false,
@@ -1406,9 +1441,42 @@ Future editStuden(BuildContext context, setState, controller, studens) {
           title: const Center(child: Text('Estudiante')),
           content: SizedBox(
             width: 300,
-            height: 250,
+            height: 350,
             child: Column(
               children: <Widget>[
+                Obx(() {
+                  return Stack(
+                    children: [
+                      controller.imgSt.value == null
+                          ? CircleAvatar(
+                              backgroundImage: url.text == ""
+                                  ? const NetworkImage(
+                                      "https://cdn-icons-png.flaticon.com/512/6596/6596121.png")
+                                  : NetworkImage(url.text),
+                              radius: 50,
+                            )
+                          : CircleAvatar(
+                              radius: 50,
+                              backgroundImage:
+                                  MemoryImage(controller.imgSt.value!),
+                            ),
+                      Positioned(
+                        bottom: -10,
+                        left: 50,
+                        child: IconButton(
+                          onPressed: () async {
+                            Uint8List? nuevaImagen =
+                                await controller.subirImage(setState);
+                            controller.actualizarImagen(nuevaImagen);
+                          },
+                          icon: const Icon(Icons.add_a_photo),
+                          iconSize: 30,
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+                const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
                 TextFormField(
                   controller: fullnameController,
                   decoration: InputDecoration(
@@ -1526,6 +1594,8 @@ Future editStuden(BuildContext context, setState, controller, studens) {
             TextButton(
               child: const Text('Guardar'),
               onPressed: () async {
+                String? imgUrl = await uploadImage(
+                    fullnameController.text, controller.imgSt.value);
                 UserStudent users = UserStudent(
                     idStudent: idController.text,
                     fullname: fullnameController.text,
@@ -1533,8 +1603,11 @@ Future editStuden(BuildContext context, setState, controller, studens) {
                     age: controller.age.toString(),
                     anioLec: controller.selectItem.value,
                     password: pasword.text,
-                    idTeacher: idTeacher.text);
+                    idTeacher: idTeacher.text,
+                    urlImage: imgUrl.toString());
+
                 updateStudent(users);
+
                 Navigator.of(context).pop();
                 await controller.getStudent();
                 setState(() {
@@ -1713,7 +1786,10 @@ Widget Reportes(context, setState, controller) {
                 children: [
                   Container(
                       height: 400,
-                      color: Colors.white,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        color: Colors.white,
+                      ),
                       child: Obx(() {
                         print(controller.graficaDatos.value);
                         print(controller.datosExternos.length);

@@ -222,9 +222,18 @@ Future<String> verificarCredenciales(String name, String password) async {
 /// - `birthdate`: La fecha de nacimiento del estudiante.
 /// - `schoolYear`: El año escolar del estudiante.
 /// - `password`: La contraseña del estudiante.
-Future<void> addStudent(String name, String birthdate, String age,
-    String schoolYear, String password) async {
+Future<void> addStudent(Uint8List img, String name, String birthdate,
+    String age, String schoolYear, String password) async {
   // Obtiene una referencia a la colección 'CuentaStudent'.
+  String? imgUrl;
+  print("Save deL estudiante");
+  print(img.isEmpty);
+  if (img.isEmpty) {
+    imgUrl = "";
+  } else {
+    imgUrl = await uploadImage("Avatar${name + schoolYear}", img);
+  }
+
   CollectionReference cuentaCollection = db.collection("CuentaStudent");
 
   // Crea un nuevo documento en la colección con los datos proporcionados.
@@ -234,7 +243,8 @@ Future<void> addStudent(String name, String birthdate, String age,
     "age": age,
     "schoolYear": schoolYear,
     "password": password,
-    "idTeacher": docuIdTeacer
+    "idTeacher": docuIdTeacer,
+    "urlImage": imgUrl
   });
 
   // Guarda el ID del documento creado.
@@ -663,7 +673,8 @@ Future<void> updateStudent(UserStudent user) async {
     "schoolYear": user.anioLec,
     "age": user.age,
     "password": user.password,
-    "idTeacher": user.idTeacher
+    "idTeacher": user.idTeacher,
+    "urlImage": user.urlImage
   });
 }
 

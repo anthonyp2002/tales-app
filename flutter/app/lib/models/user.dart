@@ -9,8 +9,9 @@ class User {
   final String age;
   final String anioLec;
   final String password;
+  final String urlImg;
 
   /// Crea una nueva instancia de `User`.
   User(this.fullname, this.age, this.anioLec, this.gmail, this.password,
-      this.phone);
+      this.phone, this.urlImg);
 }
