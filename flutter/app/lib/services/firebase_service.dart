@@ -264,11 +264,18 @@ Future<void> addStudent(Uint8List img, String name, String birthdate,
 /// - `birthdate`: La fecha de nacimiento del profesor.
 /// - `phone`: El teléfono del profesor.
 /// - `password`: La contraseña del profesor.
-Future<void> addTea(String name, String gmail, String age, String phone,
-    String birthdate, String password) async {
+Future<void> addTea(Uint8List img, String name, String gmail, String age,
+    String phone, String birthdate, String password) async {
   // Obtiene una referencia a la colección 'CuentaTeacher'.
   CollectionReference cuentaCollection = db.collection("CuentaTeacher");
-
+  String? imgUrl;
+  print("Save deL estudiante");
+  print(img.isEmpty);
+  if (img.isEmpty) {
+    imgUrl = "";
+  } else {
+    imgUrl = await uploadImage("Avatar${gmail}", img);
+  }
   // Crea un nuevo documento en la colección con los datos proporcionados.
   DocumentReference documentReference = await cuentaCollection.add({
     "name": name,
@@ -276,7 +283,8 @@ Future<void> addTea(String name, String gmail, String age, String phone,
     "birthdate": birthdate,
     "age": age,
     "phone": phone,
-    "password": password
+    "password": password,
+    "urlImage": imgUrl
   });
 
   // Guarda el ID del documento creado.

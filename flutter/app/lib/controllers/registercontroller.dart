@@ -14,6 +14,7 @@ class RegisterController extends GetxController {
   final GlobalKey<FormState> singinFormKey =
       GlobalKey<FormState>(debugLabel: '__singinFormKey__');
   RxString selectItem = ''.obs;
+
   List<String> options = [
     '1 Basica',
     '2 Basica',
@@ -33,7 +34,7 @@ class RegisterController extends GetxController {
   final anioLecController = TextEditingController();
   final confirmController = TextEditingController();
   final url = "";
-  late Uint8List imagen;
+  Uint8List imagen = Uint8List(0);
 
   RxInt age = 0.obs;
   @override
@@ -132,8 +133,8 @@ class RegisterController extends GetxController {
     Get.lazyPut(() => TeacherController());
 
     if (singinFormKey.currentState!.validate()) {
-      await addTea(
-          a.fullname, a.gmail, age.toString(), a.phone, a.age, a.password);
+      await addTea(imagen, a.fullname, a.gmail, age.toString(), a.phone, a.age,
+          a.password);
       Get.snackbar('Login', 'Registrado Correctamente');
       Get.offAllNamed('/teacherPage');
     } else {
