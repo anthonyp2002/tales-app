@@ -106,9 +106,9 @@ class TeacherController extends GetxController {
     } else {
       as = imgSt.value!;
     }
-    imgSt.value = null;
 
-    addStudent(as, a.fullname, a.age, age.toString(), a.anioLec, a.password);
+    await addStudent(
+        as, a.fullname, a.age, age.toString(), a.anioLec, a.password);
     await getStudent();
     refresh();
     update();

@@ -1000,7 +1000,8 @@ Widget Questionnaire(controller, context) {
                         Container(
                           padding: const EdgeInsets.all(5.0),
                           child: const CircleAvatar(
-                            backgroundColor: Color(0xFF17203A),
+                            backgroundImage: NetworkImage(
+                                "https://cdn-icons-png.flaticon.com/512/8456/8456568.png"),
                             radius: 35,
                           ),
                         ),
